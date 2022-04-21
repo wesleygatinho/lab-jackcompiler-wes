@@ -26,6 +26,9 @@ public class Scanner {
             case '+':
                 advance();
                 return "+";
+            case '-':
+                advance();
+                return "-";
             default:
                 break;
         }
