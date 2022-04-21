@@ -30,8 +30,10 @@ public class Parser {
             digit();
             System.out.println("sub");
             oper();
-        } else {
+        } else if (peek() == 0) {
             // vazio
+        } else {
+            throw new Error("syntax error");
         }
     }
 
