@@ -23,8 +23,13 @@ public class App
 
     public static void main( String[] args )
     {
-        String input = "48+8+9";
-        Parser p = new Parser (input.getBytes());
-        p.parse();
+        String input = "489+8+9";
+        //Parser p = new Parser (input.getBytes());
+        //p.parse();
+        Scanner scan = new Scanner (input.getBytes());
+        System.out.println(scan.nextToken());
+        System.out.println(scan.nextToken());
+        System.out.println(scan.nextToken());
+        System.out.println(scan.nextToken());
     }
 }
