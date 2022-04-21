@@ -1,5 +1,7 @@
 package br.ufma.ecp;
 
+import java.nio.charset.StandardCharsets;
+
 public class Scanner {
 
     private byte[] input;
@@ -35,13 +37,9 @@ public class Scanner {
         while (Character.isDigit(peek())) {
             advance();
         }
-        try {
-            String n = new String(input, start, current-start, "UTF-8");    
+        
+            String n = new String(input, start, current-start, StandardCharsets.UTF_8)  ;
             return n;
-        } catch (Exception e) {
-            
-        }
-        return null;
     }
 
     private void advance()  {
