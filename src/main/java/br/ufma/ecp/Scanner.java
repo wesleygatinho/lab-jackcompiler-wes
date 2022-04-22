@@ -31,6 +31,8 @@ public class Scanner {
             case '-':
                 advance();
                 return new Token (MINUS,"-");
+            case 0:
+                return new Token (EOF,"EOF");
             default:
                 break;
         }

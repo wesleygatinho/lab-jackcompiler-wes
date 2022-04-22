@@ -1,13 +1,14 @@
 package br.ufma.ecp;
 
-import java.security.DigestInputStream;
 
 public class Parser {
-    private byte[] input;
-    private int current;
+    private Scanner scan;
+    private Token currentToken;
     
     public Parser (byte[] input) {
-        this.input = input;
+        scan = new Scanner(input);
+        currentToken = scan.nextToken();
+        
     }
 
     public void parse () {
@@ -15,46 +16,40 @@ public class Parser {
     }
 
     void expr() {
-        digit();
+        number();
         oper();
     }
 
-    void oper () {
-        if (peek() == '+') {
-            match('+');
-            digit();
-            System.out.println("add");
-            oper();
-        } else if (peek() == '-') {
-            match('-');
-            digit();
-            System.out.println("sub");
-            oper();
-        } else if (peek() == 0) {
-            // vazio
-        } else {
+    void number () {
+        System.out.println(currentToken.lexeme);
+        match(TokenType.NUMBER);
+    }
+
+    private void nextToken () {
+        currentToken = scan.nextToken();
+    }
+
+   private void match(TokenType t) {
+        if (currentToken.type == t) {
+            nextToken();
+        }else {
             throw new Error("syntax error");
         }
-    }
+   }
 
-    void digit () {
-        if (Character.isDigit(peek())) {
-            System.out.println(peek());
-            match(peek());
-        } else {
-           throw new Error("syntax error");
-        }
-    }
-
-    private char peek () {
-        if (current < input.length)
-           return (char)input[current];
-       return 0;
-    }
-
-    private void match (char c) {
-        if (c == peek()) {
-            current++;
+    void oper () {
+        if (currentToken.type == TokenType.PLUS) {
+            match(TokenType.PLUS);
+            number();
+            System.out.println("add");
+            oper();
+        } else if (currentToken.type == TokenType.MINUS) {
+            match(TokenType.MINUS);
+            number();
+            System.out.println("sub");
+            oper();
+        } else if (currentToken.type == TokenType.EOF) {
+            // vazio
         } else {
             throw new Error("syntax error");
         }

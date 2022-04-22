@@ -25,6 +25,11 @@ public class App
 
     public static void main( String[] args )
     {
+
+        String input = "45+89-876";
+        Parser p = new Parser (input.getBytes());
+        p.parse();
+        /*
         String input = "489-85+69";
         Scanner scan = new Scanner (input.getBytes());
         System.out.println(scan.nextToken());
@@ -34,5 +39,6 @@ public class App
         System.out.println(scan.nextToken());
         Token tk = new Token(NUMBER, "42");
         System.out.println(tk);
+        */
     }
 }
