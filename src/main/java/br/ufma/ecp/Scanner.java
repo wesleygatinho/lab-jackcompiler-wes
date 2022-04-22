@@ -2,6 +2,8 @@ package br.ufma.ecp;
 
 import java.nio.charset.StandardCharsets;
 
+import static br.ufma.ecp.TokenType.*;
+
 public class Scanner {
 
     private byte[] input;
@@ -14,7 +16,7 @@ public class Scanner {
         start = 0;
     }
 
-    public String nextToken () {
+    public Token nextToken () {
         start = current;
         char ch = peek();
 
@@ -25,10 +27,10 @@ public class Scanner {
         switch (ch) {
             case '+':
                 advance();
-                return "+";
+                return new Token (PLUS,"+");
             case '-':
                 advance();
-                return "-";
+                return new Token (MINUS,"-");
             default:
                 break;
         }
@@ -36,13 +38,13 @@ public class Scanner {
         return null;
     }
 
-    private String number() {
+    private Token number() {
         while (Character.isDigit(peek())) {
             advance();
         }
         
-            String n = new String(input, start, current-start, StandardCharsets.UTF_8)  ;
-            return n;
+            String num = new String(input, start, current-start, StandardCharsets.UTF_8)  ;
+            return new Token(NUMBER, num);
     }
 
     private void advance()  {
