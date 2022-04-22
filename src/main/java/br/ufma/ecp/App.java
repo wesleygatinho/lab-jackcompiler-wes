@@ -1,8 +1,10 @@
 package br.ufma.ecp;
 
+import static br.ufma.ecp.TokenType.*;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.file.Files; 
 
 public class App 
 {
@@ -30,5 +32,7 @@ public class App
         System.out.println(scan.nextToken());
         System.out.println(scan.nextToken());
         System.out.println(scan.nextToken());
+        Token tk = new Token(NUMBER, "42");
+        System.out.println(tk);
     }
 }
