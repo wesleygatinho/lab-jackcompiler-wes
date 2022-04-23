@@ -26,9 +26,14 @@ public class App
     public static void main( String[] args )
     {
 
-        String input = "45+89-876";
+        /*
+        String input = "45  + 89   -       876";
         Parser p = new Parser (input.getBytes());
         p.parse();
+        */
+        Parser p = new Parser (fromFile().getBytes());
+        p.parse();
+
         /*
         String input = "489-85+69";
         Scanner scan = new Scanner (input.getBytes());

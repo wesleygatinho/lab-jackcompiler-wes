@@ -16,7 +16,19 @@ public class Scanner {
         start = 0;
     }
 
+    private void skipWhitespace() {
+        char ch = peek();
+        while (ch == ' ' || ch == '\r' || ch == '\t' || ch == '\n') {
+            advance();
+            ch = peek();
+        }
+    }
+    
+
     public Token nextToken () {
+
+        skipWhitespace();
+
         start = current;
         char ch = peek();
 
