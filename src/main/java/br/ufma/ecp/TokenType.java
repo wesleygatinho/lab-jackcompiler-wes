@@ -5,5 +5,7 @@ public enum TokenType {
      // Literals.
      NUMBER,
 
-     EOF
+     EOF,
+
+     ILLEGAL
 }

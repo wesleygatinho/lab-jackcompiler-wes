@@ -46,10 +46,8 @@ public class Scanner {
             case 0:
                 return new Token (EOF,"EOF");
             default:
-                break;
+                return new Token(ILLEGAL, Character.toString(ch));
         }
-
-        return null;
     }
 
     private Token number() {
