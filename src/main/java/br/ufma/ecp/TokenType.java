@@ -6,6 +6,10 @@ public enum TokenType {
      NUMBER,
      IDENT,
 
+     // keywords
+     METHOD,
+     WHILE,
+     IF,
 
      EOF,
 

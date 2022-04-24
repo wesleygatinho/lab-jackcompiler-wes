@@ -1,6 +1,8 @@
 package br.ufma.ecp;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import static br.ufma.ecp.TokenType.*;
 
@@ -9,6 +11,17 @@ public class Scanner {
     private byte[] input;
     private int current;
     private int start;
+
+    private static final Map<String, TokenType> keywords;
+ 
+
+    static {
+        keywords = new HashMap<>();
+        keywords.put("method",    TokenType.METHOD);
+        keywords.put("while",  TokenType.WHILE);
+        keywords.put("if",   TokenType.IF);
+    }
+
     
     public Scanner (byte[] input) {
         this.input = input;
@@ -59,7 +72,9 @@ public class Scanner {
         while (isAlphaNumeric(peek())) advance();
 
         String id = new String(input, start, current-start, StandardCharsets.UTF_8)  ;
-        return new Token(IDENT, id);
+        TokenType type = keywords.get(id);
+        if (type == null) type = IDENT;
+        return new Token(type, id);
     }
 
     private Token number() {
