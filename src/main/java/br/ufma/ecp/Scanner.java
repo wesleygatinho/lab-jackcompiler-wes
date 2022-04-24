@@ -36,6 +36,10 @@ public class Scanner {
             return number();
         }
 
+        if (isAlpha(ch)) {
+            return identifier();
+        }
+
         switch (ch) {
             case '+':
                 advance();
@@ -46,8 +50,16 @@ public class Scanner {
             case 0:
                 return new Token (EOF,"EOF");
             default:
+                advance();
                 return new Token(ILLEGAL, Character.toString(ch));
         }
+    }
+
+    private Token identifier() {
+        while (isAlphaNumeric(peek())) advance();
+
+        String id = new String(input, start, current-start, StandardCharsets.UTF_8)  ;
+        return new Token(IDENT, id);
     }
 
     private Token number() {
@@ -65,6 +77,16 @@ public class Scanner {
             current++;
         }
     }
+
+    private boolean isAlpha(char c) {
+        return (c >= 'a' && c <= 'z') ||
+               (c >= 'A' && c <= 'Z') ||
+                c == '_';
+      }
+    
+      private boolean isAlphaNumeric(char c) {
+        return isAlpha(c) || Character.isDigit((c));
+      }
     
 
     private char peek () {
