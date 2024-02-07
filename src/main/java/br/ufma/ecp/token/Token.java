@@ -11,25 +11,40 @@ public class Token {
         this.line = line;
     }
 
-    public String toString() {
-        var type = this.type.toString();
-        if (type.equals("NUMBER"))
-            type =  "intConst";
+    public String toString() { 
+        String categoria = type.toString().toLowerCase();
 
-        if (type.equals("STRING"))
-            type =  "stringConst";
+        String valor = lexeme;
+        if (isSymbol(lexeme)) {
+            categoria = "symbol";
+            //Os símbolos <, >, ", e & são impressos como &lt;  &gt;  &quot; e &amp; Para não conflitar com o significado destes símbolos no XML
+            if (valor.equals(">")) {
+                valor = "&gt;" ;
+            } else if (valor.equals("<")) {
+                valor = "&lt;" ;
+            } else if (valor.equals("\"")) {
+                valor = "&quot;" ;
+            } else if (valor.equals("&")) {
+                valor = "&amp;" ;
+            }
 
-        if (type.equals("IDENT"))
-            type =  "identifier";
-
-        if (TokenType.isSymbol(lexeme.charAt(0)))
-            type = "symbol";
-
-        if (TokenType.isKeyword(this.type) )
-            type = "keyword";
-    
-
-        return "<"+ type +">" + lexeme + "</"+ type + ">";
+        } else if (categoria.equals("number")) {
+            categoria = "integerConstant";
+        } else if (categoria.equals("ident")) {
+            categoria = "identifier";
+        } else if (categoria.equals("string")) {
+            categoria = "stringConstant";
+        } else {
+          categoria = "keyword";
+        }
+        return "<" + categoria + "> " + valor  + " </" + categoria + ">";
+        //return "*"+line +"*" +"<"+ type +">" + lexeme + "</"+ type + ">"; //< --- Serve para testar sem o HTML
+    }
+    private boolean isSymbol(String lexeme) {
+        return lexeme.equals("<") || lexeme.equals(">") || lexeme.equals("\"") || lexeme.equals(";")
+                || lexeme.equals("{") || lexeme.equals("}") || lexeme.equals("(") || lexeme.equals(")")
+                || lexeme.equals("=") || lexeme.equals(".") || lexeme.equals("&") || lexeme.equals("+")
+                || lexeme.equals("-") || lexeme.equals(",") || lexeme.equals("~");
     }
     
 }
