@@ -15,9 +15,32 @@ public class App
 
     
         String input = """
-            45  + if - \"ola\" 
-            let laranja = 876;
-            println("laranja");
+            // Define uma função que retorna o n-ésimo número de Fibonacci.
+            function int fibonacci(int n) {
+            var int a, b, temp, i;
+            let a = 0;
+            let b = 1;
+            if (n <= 0) {
+                return 0;
+            } else if (n == 1) {
+                return 1;
+            } else {
+                for (let i = 2; i <= n; i = i + 1) {
+                    let temp = b;
+                    let b = a + b;
+                    let a = temp;
+                }
+                return b;
+            }
+}
+
+// Função principal que imprime os primeiros 10 números de Fibonacci.
+function void main() {
+    var int i;
+    for (let i = 0; i < 10; i = i + 1) {
+        do Output.printInt(fibonacci(i));
+    }
+}
                 
                 """;
         Scanner scan = new Scanner (input.getBytes());
