@@ -14,7 +14,7 @@ public class Token {
     public String toString() { 
         String categoria = type.toString().toLowerCase();
 
-        /*String valor = lexeme;
+        String valor = lexeme;
         if (isSymbol(lexeme)) {
             categoria = "symbol";
             //Os símbolos <, >, ", e & são impressos como &lt;  &gt;  &quot; e &amp; Para não conflitar com o significado destes símbolos no XML
@@ -37,14 +37,14 @@ public class Token {
         } else {
           categoria = "keyword";
         }
-        return "<" + categoria + "> " + valor  + " </" + categoria + ">";*/
-        return "*"+line +"*" +"<"+ type +">" + lexeme + "</"+ type + ">"; //< --- Serve para testar sem o HTML
+        return "<" + categoria + "> " + valor  + " </" + categoria + ">";
+        //return "*"+line +"*" +"<"+ type +">" + lexeme + "</"+ type + ">"; //< --- Serve para testar sem o HTML
     }
-    /*private boolean isSymbol(String lexeme) {
+    private boolean isSymbol(String lexeme) {
         return lexeme.equals("<") || lexeme.equals(">") || lexeme.equals("\"") || lexeme.equals(";")
                 || lexeme.equals("{") || lexeme.equals("}") || lexeme.equals("(") || lexeme.equals(")")
                 || lexeme.equals("=") || lexeme.equals(".") || lexeme.equals("&") || lexeme.equals("+")
                 || lexeme.equals("-") || lexeme.equals(",") || lexeme.equals("~");
-    }*/
+    }
     
 }
