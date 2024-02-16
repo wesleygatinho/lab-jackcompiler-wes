@@ -69,10 +69,11 @@ public class Parser {
 
      void parseExpressionList() {
         printNonTerminal("expressionList");
+        parseExpression();
 
-        if (!peekTokenIs(RPAREN)) {
+        /*if (!peekTokenIs(RPAREN)) {
             parseExpression();
-        }
+        }*/ //devemos continuar analisando as expressões na lista, mesmo que o próximo token não seja um parêntese de fechamento RPAREN
 
         while (peekTokenIs(COMMA)) {
             expectPeek(COMMA);
@@ -85,18 +86,20 @@ public class Parser {
         printNonTerminal("letStatement");
         expectPeek(LET);
         expectPeek(IDENT);
-
+    
         if (peekTokenIs(LBRACKET)) {
             expectPeek(LBRACKET);
             parseExpression();
             expectPeek(RBRACKET);
         }
-
+    
         expectPeek(EQ);
         parseExpression();
         expectPeek(SEMICOLON);
         printNonTerminal("/letStatement");
     }
+
+    
 
      void parseExpression() {
         printNonTerminal("expression");
@@ -109,32 +112,47 @@ public class Parser {
   }
 
 
-     void parseTerm() {
-        printNonTerminal("term");
-        switch (peekToken.type) {
-          case NUMBER:
-            expectPeek(TokenType.NUMBER);
-            break;
-          case STRING:
-            expectPeek(TokenType.STRING);
-            break;
-          case FALSE:
-          case NULL:
-          case TRUE:
-            expectPeek(TokenType.FALSE, TokenType.NULL, TokenType.TRUE);
-            break;
-          case THIS:
-            expectPeek(TokenType.THIS);
-            break;
-          case IDENT:
-            expectPeek(TokenType.IDENT);
-            break;
-          default:
-            throw error(peekToken, "term expected");
-        }
+  void parseTerm() {
+    printNonTerminal("term");
+
     
-        printNonTerminal("/term");
-      }
+    if (peekTokenIs(IDENT)) {  
+
+        expectPeek(IDENT);        
+        expectPeek(DOT);
+        expectPeek(IDENT);
+        
+        if (peekTokenIs(LPAREN)) {
+            expectPeek(LPAREN);
+            parseExpressionList();
+            expectPeek(RPAREN);
+        }
+    } else {
+        switch (peekToken.type) {
+            case NUMBER:
+                expectPeek(TokenType.NUMBER);
+                break;
+            case STRING:
+                expectPeek(TokenType.STRING);
+                break;
+            case FALSE:
+            case NULL:
+            case TRUE:
+                expectPeek(TokenType.FALSE, TokenType.NULL, TokenType.TRUE);
+                break;
+            case THIS:
+                expectPeek(TokenType.THIS);
+                break;
+            case IDENT:
+                expectPeek(TokenType.IDENT);
+                break;
+            default:
+                throw error(peekToken, "term expected");
+        }
+    }
+
+    printNonTerminal("/term");
+}
  
      // funções auxiliares
 

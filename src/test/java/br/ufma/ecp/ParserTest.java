@@ -230,6 +230,55 @@ public class ParserTest extends TestSupport {
         assertEquals(expectedResult, result);
     }
 
+
+    @Test
+    public void testParseLet() {
+        var input = "let square = Square.new(0, 0, 30);";
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseLet();
+        var expectedResult =  """
+        <letStatement>
+        <keyword> let </keyword>
+        <identifier> square </identifier>
+        <symbol> = </symbol>
+        <expression>
+          <term>
+            <identifier> Square </identifier>
+            <symbol> . </symbol>
+            <identifier> new </identifier>
+            <symbol> ( </symbol>
+            <expressionList>
+              <expression>
+                <term>
+                  <integerConstant> 0 </integerConstant>
+                </term>
+              </expression>
+              <symbol> , </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 0 </integerConstant>
+                </term>
+              </expression>
+              <symbol> , </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 30 </integerConstant>
+                </term>
+              </expression>
+            </expressionList>
+            <symbol> ) </symbol>
+          </term>
+        </expression>
+        <symbol> ; </symbol>
+      </letStatement>
+      """;
+        var result = parser.XMLOutput();
+        expectedResult = expectedResult.replaceAll("  ", "");
+        result = result.replaceAll("\r", ""); // no codigo em linux não tem o retorno de carro
+        assertEquals(expectedResult, result);
+    }
+
+
     
     
 }
