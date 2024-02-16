@@ -29,6 +29,21 @@ public class Parser {
          
      }
 
+     void parseIf() {
+        printNonTerminal("ifStatement");
+        expectPeek(IF);
+        expectPeek(LPAREN);
+        parseExpression();
+        expectPeek(RPAREN);
+        expectPeek(LBRACE);
+        printNonTerminal("statements");
+        parseDo(); 
+        printNonTerminal("/statements");
+        expectPeek(RBRACE);
+        printNonTerminal("/ifStatement");
+    }
+
+
      void parseDo() {
         printNonTerminal("doStatement");
         expectPeek(DO);
