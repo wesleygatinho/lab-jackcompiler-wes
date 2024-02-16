@@ -29,6 +29,15 @@ public class Parser {
          
      }
 
+     void parseClassVarDec() {
+        printNonTerminal("classVarDec");
+        expectPeek(FIELD);
+        expectPeek(IDENT);
+        expectPeek(IDENT);
+        expectPeek(SEMICOLON);
+        printNonTerminal("/classVarDec");
+     }
+
      void parseIf() {
         printNonTerminal("ifStatement");
         expectPeek(IF);
