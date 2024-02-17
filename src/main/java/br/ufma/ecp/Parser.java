@@ -43,6 +43,7 @@ public class Parser {
         expectPeek(RPAREN);
         parseSubroutineBody();
         
+        
         printNonTerminal("/subroutineDec");
      }
 
@@ -86,14 +87,14 @@ public class Parser {
     }
 
     void parseReturnStatement() {
-        printNonTerminal("returnstatement");
+        printNonTerminal("returnStatement");
         expectPeek(RETURN);
         if (!peekTokenIs(SEMICOLON)) {
             parseExpression();
             expectPeek(SEMICOLON);
         }
         
-        printNonTerminal("/returnstatement");
+        printNonTerminal("/returnStatement");
     }   
     
     
@@ -137,11 +138,15 @@ public class Parser {
      }
 
      void parseSubroutineCall() {
-        if (peekTokenIs(LPAREN)) {
+        if (peekTokenIs(IDENT)){
+            expectPeek(IDENT);
             expectPeek(LPAREN);
             expectPeek(RPAREN);
-            expectPeek(SEMICOLON); // muito estranho
+        } else if (peekTokenIs(LPAREN)) {
+            expectPeek(LPAREN);
             parseExpressionList();
+            expectPeek(RPAREN);
+            
             
             
         } else {
@@ -211,11 +216,12 @@ public class Parser {
         }
         
         
-        /*if (peekTokenIs(LPAREN)) {
+        if (peekTokenIs(LPAREN)) {
             expectPeek(LPAREN);
             parseExpressionList();
             expectPeek(RPAREN);
-        }*/
+        }
+
     } else {
         switch (peekToken.type) {
             case NUMBER:
@@ -236,6 +242,7 @@ public class Parser {
                 expectPeek(IDENT);
                 break;
             case RETURN:
+                expectPeek(RETURN);
                 parseReturnStatement();
                 break;
             case LPAREN:
