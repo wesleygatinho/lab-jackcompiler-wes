@@ -160,11 +160,11 @@ public class Parser {
 
      void parseExpressionList() {
         printNonTerminal("expressionList");
-        parseExpression();
+        
 
-        /*if (!peekTokenIs(RPAREN)) {
+        if (!peekTokenIs(RPAREN)) {
             parseExpression();
-        }*/ //devemos continuar analisando as expressões na lista, mesmo que o próximo token não seja um parêntese de fechamento RPAREN
+        } //devemos continuar analisando as expressões na lista, mesmo que o próximo token não seja um parêntese de fechamento RPAREN
 
         while (peekTokenIs(COMMA)) {
             expectPeek(COMMA);
@@ -205,24 +205,7 @@ public class Parser {
 
   void parseTerm() {
     printNonTerminal("term");
-
     
-    if (peekTokenIs(IDENT)) {  
-        expectPeek(IDENT);  
-              
-        if (peekTokenIs(DOT)){
-            expectPeek(DOT);
-            expectPeek(IDENT);
-        }
-        
-        
-        if (peekTokenIs(LPAREN)) {
-            expectPeek(LPAREN);
-            parseExpressionList();
-            expectPeek(RPAREN);
-        }
-
-    } else {
         switch (peekToken.type) {
             case NUMBER:
                 expectPeek(TokenType.NUMBER);
@@ -239,7 +222,16 @@ public class Parser {
                 expectPeek(THIS);
                 break;
             case IDENT:
-                expectPeek(IDENT);
+                expectPeek(TokenType.IDENT);
+                if (peekTokenIs(DOT)) {
+                    expectPeek(DOT);
+                    expectPeek(IDENT);
+                }
+                if (peekTokenIs(LPAREN)) {
+                    expectPeek(LPAREN);
+                    parseExpressionList();
+                    expectPeek(RPAREN);
+                }
                 break;
             case RETURN:
                 expectPeek(RETURN);
@@ -253,10 +245,11 @@ public class Parser {
             default:
                 throw error(peekToken, "term expected");
         }
+        printNonTerminal("/term");
     }
 
-    printNonTerminal("/term");
-}
+    
+
  
      // funções auxiliares
 

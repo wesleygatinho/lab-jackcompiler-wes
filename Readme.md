@@ -34,7 +34,7 @@
 
 ### @contato: wesley.gatinho@discente.ufma.br
 
-### @data última versão: 07/02/2024
+### @data última versão: 16/02/2024
 
 ### @Copyright/License
 

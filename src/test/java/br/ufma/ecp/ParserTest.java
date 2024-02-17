@@ -146,6 +146,8 @@ public class ParserTest extends TestSupport {
             <keyword> do </keyword>
             <identifier> hello </identifier>
             <symbol> ( </symbol>
+            <expressionList>
+            </expressionList>
             <symbol> ) </symbol>
             <symbol> ; </symbol>
           </doStatement>
