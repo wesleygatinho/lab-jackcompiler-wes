@@ -68,7 +68,7 @@ class SquareGame {
          if (key = 132) { let direction = 4; }   // right arrow
 
          // waits for the key to be released
-         while ((~key = 0)) {
+         while (~(key = 0)) {
             let key = Keyboard.keyPressed();
             do moveSquare();
          }
