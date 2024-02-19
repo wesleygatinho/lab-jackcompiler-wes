@@ -179,8 +179,10 @@ public class Parser {
             parseExpression();
             expectPeek(SEMICOLON);
         } else{
+            vmWriter.writePush(Segment.CONST, 0);
             expectPeek(SEMICOLON);
         }
+        vmWriter.writeReturn();
         
         printNonTerminal("/returnStatement");
     }   
