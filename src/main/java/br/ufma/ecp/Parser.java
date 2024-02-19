@@ -396,9 +396,15 @@ public class Parser {
             case WHILE:
                 expectPeek(WHILE);
                 break;
+            case MINUS:
             case NOT:
-                expectPeek(TokenType.NOT);
-                parseTerm();                
+                expectPeek(MINUS, NOT);
+                var op = currentToken.type;
+                parseTerm();               
+                if (op == MINUS) 
+                    vmWriter.writeArithmetic(Command.NEG);
+                else
+                    vmWriter.writeArithmetic(Command.NOT);
                 break;
             default:
                 throw error(peekToken, "term expected");
