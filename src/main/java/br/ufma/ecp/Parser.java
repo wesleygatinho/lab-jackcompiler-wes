@@ -5,10 +5,11 @@ import br.ufma.ecp.token.TokenType;
 
 import static br.ufma.ecp.token.TokenType.*;
 
+import br.ufma.ecp.SymbolTable.Kind;
+import br.ufma.ecp.SymbolTable.Symbol;
 import br.ufma.ecp.VMWriter.Command;
 import br.ufma.ecp.VMWriter.Segment;
 
-import static br.ufma.ecp.VMWriter.*;
 
 public class Parser {
 
@@ -18,14 +19,24 @@ public class Parser {
      private Token currentToken;
      private Token peekToken;
      private StringBuilder xmlOutput = new StringBuilder();
+     private SymbolTable symbolTable;
      private VMWriter vmWriter = new VMWriter();
 
      private int ifLabelNum = 0;
      private int whileLabelNum = 0;
+
+     private SymbolTable symTable = new SymbolTable();
+     private String className;
  
      public Parser(byte[] input) {
          scan = new Scanner(input);
+         symbolTable = new SymbolTable();
+         vmWriter = new VMWriter();
+
          nextToken();
+
+         ifLabelNum = 0;
+         whileLabelNum = 0;
      }
  
      private void nextToken() {
@@ -35,14 +46,23 @@ public class Parser {
  
  
      public void parse () {
+        parseClass();
+     }
+
+     void parseClass() {
         printNonTerminal("class");
         expectPeek(CLASS);
-        expectPeek(IDENT); 
+        expectPeek(IDENT);
+        className = currentToken.lexeme(); 
         expectPeek(LBRACE);
-        while (peekTokenIs(FIELD)) {
+        
+        while (peekTokenIs(STATIC) || peekTokenIs(FIELD)) {
             parseClassVarDec();
         }
-        parseSubroutineDec();
+
+        while (peekTokenIs(FUNCTION) || peekTokenIs(CONSTRUCTOR) || peekTokenIs(METHOD)) {
+            parseSubroutineDec();
+        }
         expectPeek(RBRACE);
             
         printNonTerminal("/class");
@@ -50,71 +70,79 @@ public class Parser {
      
 
      void parseSubroutineDec() {
-        
-        while (peekTokenIs(CONSTRUCTOR)) {
-            printNonTerminal("subroutineDec");
-            ifLabelNum = 0;
-            whileLabelNum = 0;
-            expectPeek(CONSTRUCTOR);
-            while (peekTokenIs(IDENT)){
-                expectPeek(IDENT);
-            }
-            
-            expectPeek(LPAREN);
-            parseParameterList();
-            expectPeek(RPAREN);
-            parseSubroutineBody();
-            printNonTerminal("/subroutineDec");
+        printNonTerminal("subroutineDec");
+
+        ifLabelNum = 0;
+        whileLabelNum = 0;
+
+        symbolTable.startSubroutine();
+
+        expectPeek(CONSTRUCTOR, FUNCTION, METHOD);
+        var subroutineType = currentToken.type;
+
+        if (subroutineType == METHOD) {
+            symbolTable.define("this", className, Kind.ARG);
         }
-        while (peekTokenIs(METHOD)) {
-            printNonTerminal("subroutineDec");
-            expectPeek(METHOD);
-            expectPeek(VOID);
-            while (peekTokenIs(IDENT)){
-                expectPeek(IDENT);
-            }
-            
-            expectPeek(LPAREN);
-            parseParameterList();
-            expectPeek(RPAREN);
-            parseSubroutineBody();
-            printNonTerminal("/subroutineDec");
-        }
-        
-        
-        
-     }
+
+        // 'int' | 'char' | 'boolean' | className
+        expectPeek(VOID, INT, CHAR, BOOLEAN, IDENT);
+        expectPeek(IDENT);
+
+        var functionName = className + "." + currentToken.lexeme;
+
+        expectPeek(LPAREN);
+        parseParameterList();
+        expectPeek(RPAREN);
+        parseSubroutineBody(functionName, subroutineType);
+
+        printNonTerminal("/subroutineDec");
+    }
 
      
 
-     void  parseParameterList() {
+     void parseParameterList() {
         printNonTerminal("parameterList");
-        
-        while (peekTokenIs(INT)) {
-            expectPeek(INT);
+
+        SymbolTable.Kind kind = Kind.ARG;
+
+        if (!peekTokenIs(RPAREN)) // verifica se tem pelo menos uma expressao
+        {
+            expectPeek(INT, CHAR, BOOLEAN, IDENT);
+            String type = currentToken.lexeme;
+
             expectPeek(IDENT);
-            
-            if (peekTokenIs(COMMA)) {
+            String name = currentToken.lexeme;
+            symTable.define(name, type, kind);
+
+            while (peekTokenIs(COMMA)) {
                 expectPeek(COMMA);
+                expectPeek(INT, CHAR, BOOLEAN, IDENT);
+                type = currentToken.lexeme;
+
+                expectPeek(IDENT);
+                name = currentToken.lexeme;
+
+                symTable.define(name, type, kind);
             }
 
-        }            
-        
+        }
+
         printNonTerminal("/parameterList");
     }
 
-    void parseSubroutineBody() {
+    void parseSubroutineBody(String functionName, TokenType subroutineType) {
+
         printNonTerminal("subroutineBody");
-        if (peekTokenIs(LBRACE)) {
-            expectPeek(LBRACE);
-            if (peekTokenIs(VAR)) {
-                parseVarDec();
-            }
-            parseStatements();
-            expectPeek(RBRACE);
+        expectPeek(LBRACE);
+        while (peekTokenIs(VAR)) {
+            parseVarDec();
         }
-        
-        
+				var nlocals = symTable.varCount(Kind.VAR);
+
+        vmWriter.writeFunction(functionName, nlocals);
+
+        parseStatements();
+        expectPeek(RBRACE);
         printNonTerminal("/subroutineBody");
     }
 
@@ -215,28 +243,31 @@ public class Parser {
     
     void parseClassVarDec() {
         printNonTerminal("classVarDec");
-        expectPeek(FIELD);
-        if(peekTokenIs(IDENT)){
-            expectPeek(IDENT);
-            expectPeek(IDENT);
-            expectPeek(SEMICOLON);
-        } else if (peekTokenIs(INT)){
-                expectPeek(INT);
-                while (peekTokenIs(IDENT)) {
-                    expectPeek(IDENT);
-                    if (peekTokenIs(COMMA)) {
-                        expectPeek(COMMA);
-                    }
-                }
-            
-            expectPeek(SEMICOLON);
-        }
-        printNonTerminal("/classVarDec");
-     }
+        expectPeek(FIELD, STATIC);
 
-     
-     
-     
+        SymbolTable.Kind kind = Kind.STATIC;
+        if (currentTokenIs(FIELD))
+            kind = Kind.FIELD;
+
+        // 'int' | 'char' | 'boolean' | className
+        expectPeek(INT, CHAR, BOOLEAN, IDENT);
+        String type = currentToken.lexeme;
+
+        expectPeek(IDENT);
+        String name = currentToken.lexeme;
+
+        symTable.define(name, type, kind);
+        while (peekTokenIs(COMMA)) {
+            expectPeek(COMMA);
+            expectPeek(IDENT);
+
+            name = currentToken.lexeme;
+            symTable.define(name, type, kind);
+        }
+
+        expectPeek(SEMICOLON);
+        printNonTerminal("/classVarDec");
+    }    
      
      
      void parseIf() {
