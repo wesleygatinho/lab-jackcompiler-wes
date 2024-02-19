@@ -13,6 +13,8 @@ import br.ufma.ecp.token.TokenType;
 
 
 public class CodeGeneration extends TestSupport {
+    
+    
     @Test
     public void testInt () {
         var input = """
@@ -24,6 +26,26 @@ public class CodeGeneration extends TestSupport {
         String actual = parser.VMOutput();
         String expected = """
                 push constant 10       
+                    """;
+            assertEquals(expected, actual);
+    }
+
+    
+    @Test
+    public void testSimpleExpression () {
+        var input = """
+            10 + 30 + 40
+            """;
+        
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseExpression();
+        String actual = parser.VMOutput();
+        String expected = """
+                push constant 10
+                push constant 30
+                add
+                push constant 40
+                add       
                     """;
             assertEquals(expected, actual);
     }
