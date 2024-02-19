@@ -5,7 +5,7 @@ import br.ufma.ecp.token.TokenType;
 
 import static br.ufma.ecp.token.TokenType.*;
 
-import javax.swing.text.Segment;
+import br.ufma.ecp.VMWriter.Segment;
 
 public class Parser {
 
@@ -322,6 +322,7 @@ public class Parser {
         switch (peekToken.type) {
             case NUMBER:
                 expectPeek(TokenType.NUMBER);
+                vmWriter.writePush(Segment.CONST, Integer.parseInt(currentToken.lexeme));
                 break;
             case STRING:
                 expectPeek(TokenType.STRING);
