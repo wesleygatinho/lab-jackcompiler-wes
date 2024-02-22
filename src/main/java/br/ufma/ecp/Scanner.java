@@ -41,7 +41,6 @@ public class Scanner {
         keywords.put("do", TokenType.DO);
         keywords.put("if", TokenType.IF);
         keywords.put("else", TokenType.ELSE);
-        keywords.put("println", TokenType.PRINTLN);
         keywords.put("return", TokenType.RETURN);
   }
 
