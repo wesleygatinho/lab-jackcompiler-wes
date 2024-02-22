@@ -10,7 +10,7 @@
             "request": "launch",
             "mainClass": "br.ufma.ecp.App",
             "projectName": "jackcompiler",
-            "args": "F:\\lab-jackcompiler-wes\\11\\complexarrays"
+            "args": "F:\\lab-jackcompiler-wes\\11"
         }
     ]
 }
